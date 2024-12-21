@@ -6,45 +6,18 @@ import numbers
 class Expression:
     """Expression class represengts an algebriac expression."""
 
-    def __init__(self, operands):
+    def __init__(self, x, y):
         """Expression class constructor method."""
-        self.operands = operands
+        self.x = x
+        self.y = y
 
-    def __add__(self, other):
+    def __add__(self):
         """Add Expression self to Expression other or number other."""
-        raise NotImplementedError
+        return self.x + self.y
 
-    def __radd__(self, other):
+    def __radd__(self, *o):
         """Add Expression other to Number self."""
-        raise NotImplementedError
-
-    def __sub__(self, other):
-        """Subtract Expression or Number other from Expression self."""
-        raise NotImplementedError
-
-    def __rsub__(self, other):
-        """Subtract Expression other from Number self."""
-        raise NotImplementedError
-
-    def __mul__(self, other):
-        """Multiply Expression self from Expression other or Number other."""
-        raise NotImplementedError
-
-    def __rmul__(self, other):
-        """Multiply Number self with Expression other."""
-        raise NotImplementedError
-
-    def __div__(self, other):
-        """Divide Expression self by Expression other or Number other."""
-        raise NotImplementedError
-
-    def __rtruediv__(self, other):
-        """Divide Number self with Expression other."""
-        raise NotImplementedError
-
-    def __pow__(self, other):
-        """Raise Expression self to the power Expression or Number other."""
-        raise NotImplementedError
+        return self.x + self.y   
 
 
 class Operator(Expression):
@@ -52,54 +25,36 @@ class Operator(Expression):
 
     def __repr__(self):
         """Return the canonical representation of an operator."""
-        return type(self).__name__ + repr(self.operands)
+        return repr(self.x) + " " + type(self).symbol + " " + repr(self.y)
+
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        raise NotImplementedError
+        if self.symbol == "+":
+            return f'{self.x} {self.symbol} {self.y}'
+        else:
+            return self.symbol   
 
 
-class Add(Expression):
+class Add(Operator):
     """Add class."""
 
     precedence = 2
     symbol = '+'
 
-
-class Sub(Expression):
-    """Subtract class."""
-
-    precedence = 2
-    symbol = '-'
-
-
-class Mul(Expression):
-    """Multiply class."""
-
-    precedence = 1
-    symbol = '*'
-
-
-class Div(Expression):
-    """Divide class."""
-
-    precedence = 1
-    symbol = '/'
-
-
-class Pow(Expression):
-    """Power class."""
-
-    precedence = 3
-    symbol = '+'
+    def __init__(self, x, y):
+        """Constructor."""
+        super().__init__(x, y)
+        super().__add__()
 
 
 class Terminal(Expression):
     """Terminal Class."""
 
-    def __init__(self, operands):
+    def __init__(self, value):
         """Operator class constructor method."""
-        return super().__init__(operands)
+        super().__init__(0, 0)
+        self.value = value
 
     def __repr__(self):
         """Return the canonical representation of the Terminal."""
@@ -110,21 +65,23 @@ class Terminal(Expression):
         return str(self.value)
 
 
-class Number(Expression):
-    """Number class."""
+class Number(Terminal):
+    """Number class"""
 
     def __init__(self, value):
-        """Class (Number) constructor method."""
+        """Constructor"""
         if isinstance(value, numbers.Number):
-            self.value = value
-        return super().__init__(())
+            super().__init__(value)
+        else:
+            raise ValueError
 
 
-class Symbol(Expression):
-    """Symbol class."""
+class Symbol(Terminal):
+    """Symbol class"""
 
-    def __init__(self, value):
-        """Symbol class constructor method."""
-        if isinstance(value, str):
-            self.value = value
-        return super().__init__(())
+    def __init__(self, op):
+        """Constructor"""
+        if isinstance(op, str):
+            super().__init__(op)
+        else:
+            raise ValueError
