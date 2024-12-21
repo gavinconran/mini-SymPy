@@ -12,7 +12,7 @@ class Expression:
 
     def __add__(self, other):
         """Add Expression self to Expression other or number other."""
-        raise NotImplementedErro
+        raise NotImplementedError
 
     def __radd__(self, other):
         """Add Expression other to Number self."""
