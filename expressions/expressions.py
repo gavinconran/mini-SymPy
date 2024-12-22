@@ -6,18 +6,29 @@ import numbers
 class Expression:
     """Expression class represengts an algebriac expression."""
 
-    def __init__(self, x, y):
+    def __init__(self, operands):
         """Expression class constructor method."""
-        self.x = x
-        self.y = y
+        self.o = operands
 
     def __add__(self):
-        """Add Expression self to Expression other or number other."""
-        return self.x + self.y
+        """Add operand 1 to operand 2."""
+        return self.__repr__()
 
-    def __radd__(self, *o):
-        """Add Expression other to Number self."""
-        return self.x + self.y   
+    def __sub__(self):
+        """Subtract operand 2 from operand 1."""
+        return self.__repr__()
+
+    def __mul__(self):
+        """Multiply operand 1 by operand 2."""
+        return self.__repr__()
+
+    def __div__(self):
+        """Divide operand 1 by operand 2."""
+        return self.__repr__()
+
+    def __pow__(self):
+        """Divide operand 1 by operand 2."""
+        return self.__repr__()       
 
 
 class Operator(Expression):
@@ -25,15 +36,12 @@ class Operator(Expression):
 
     def __repr__(self):
         """Return the canonical representation of an operator."""
-        return repr(self.x) + " " + type(self).symbol + " " + repr(self.y)
+        return type(self).__name__ + repr(self.o)
 
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        if self.symbol == "+":
-            return f'{self.x} {self.symbol} {self.y}'
-        else:
-            return self.symbol   
+        return f'{self.o[0]} {self.symbol} {self.o[1]}'   
 
 
 class Add(Operator):
@@ -44,8 +52,50 @@ class Add(Operator):
 
     def __init__(self, x, y):
         """Constructor."""
-        super().__init__(x, y)
+        super().__init__((x, y))
         super().__add__()
+
+
+class Sub(Operator):
+    """Subtraction class."""
+
+    precedence = 2
+    symbol = '-'
+
+    def __init__(self, x, y):
+        """Constructor."""
+        super().__init__((x, y))
+        super().__sub__()
+
+
+class Mul(Operator):
+    """Multiply class."""
+
+    symbol = '*'
+
+    def __init__(self, x, y):
+        super().__init__((x, y))
+        super().__mul__()
+
+
+class Div(Operator):
+    """Divide class."""
+
+    symbol = '/'
+
+    def __init__(self, x, y):
+        super().__init__((x, y))
+        super().__div__()
+
+
+class Pow(Operator):
+    """power class."""
+
+    symbol = '^'
+
+    def __init__(self, x, y):
+        super().__init__((x, y))
+        super().__pow__()
 
 
 class Terminal(Expression):
@@ -53,7 +103,7 @@ class Terminal(Expression):
 
     def __init__(self, value):
         """Operator class constructor method."""
-        super().__init__(0, 0)
+        super().__init__(())
         self.value = value
 
     def __repr__(self):
