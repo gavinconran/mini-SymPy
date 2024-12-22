@@ -12,23 +12,23 @@ class Expression:
 
     def __add__(self):
         """Add operand 1 to operand 2."""
-        return self.__repr__()
+        Expression(self.o)
 
     def __sub__(self):
         """Subtract operand 2 from operand 1."""
-        return self.__repr__()
+        return Expression(self.o)
 
     def __mul__(self):
         """Multiply operand 1 by operand 2."""
-        return self.__repr__()
+        return Expression(self.o)
 
     def __div__(self):
         """Divide operand 1 by operand 2."""
-        return self.__repr__()
+        return Expression(self.o)
 
     def __pow__(self):
         """Divide operand 1 by operand 2."""
-        return self.__repr__()
+        return Expression(self.o)
 
 
 class Operator(Expression):
