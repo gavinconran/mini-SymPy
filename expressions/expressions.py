@@ -28,7 +28,7 @@ class Expression:
 
     def __pow__(self):
         """Divide operand 1 by operand 2."""
-        return self.__repr__()       
+        return self.__repr__()
 
 
 class Operator(Expression):
@@ -38,10 +38,9 @@ class Operator(Expression):
         """Return the canonical representation of an operator."""
         return type(self).__name__ + repr(self.o)
 
-
     def __str__(self):
         """Return a string representation of the Operator."""
-        return f'{self.o[0]} {self.symbol} {self.o[1]}'   
+        return f'{self.o[0]} {self.symbol} {self.o[1]}'
 
 
 class Add(Operator):
@@ -51,7 +50,6 @@ class Add(Operator):
     symbol = '+'
 
     def __init__(self, x, y):
-        """Constructor."""
         super().__init__((x, y))
         super().__add__()
 
@@ -63,7 +61,6 @@ class Sub(Operator):
     symbol = '-'
 
     def __init__(self, x, y):
-        """Constructor."""
         super().__init__((x, y))
         super().__sub__()
 
@@ -116,10 +113,10 @@ class Terminal(Expression):
 
 
 class Number(Terminal):
-    """Number class"""
+    """Number class."""
 
     def __init__(self, value):
-        """Constructor"""
+        """Initialise a number."""
         if isinstance(value, numbers.Number):
             super().__init__(value)
         else:
@@ -127,10 +124,10 @@ class Number(Terminal):
 
 
 class Symbol(Terminal):
-    """Symbol class"""
+    """Symbol class."""
 
     def __init__(self, op):
-        """Constructor"""
+        """Initialise a symbol."""
         if isinstance(op, str):
             super().__init__(op)
         else:
