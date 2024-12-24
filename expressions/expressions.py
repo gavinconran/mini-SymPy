@@ -137,6 +137,7 @@ class Pow(Operator):
 
 class Terminal(Expression):
     """Terminal class."""
+
     def __init__(self, value):
         super().__init__(())
         self.value = value
@@ -149,8 +150,10 @@ class Terminal(Expression):
         """Return a string representation of the Terminal."""
         return str(self.value)
 
+
 class Number(Terminal):
     """Number class."""
+
     def __init__(self, value):
         if isinstance(value, numbers.Number):
             super().__init__(value)
@@ -160,6 +163,7 @@ class Number(Terminal):
 
 class Symbol(Terminal):
     """Symbol class."""
+
     def __init__(self, value):
         if isinstance(value, str):
             super().__init__(value)
