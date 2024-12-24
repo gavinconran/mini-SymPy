@@ -8,7 +8,7 @@ class Expression:
 
     def __init__(self, operands):
         """Initialise an expresiion."""
-        self.o = operands    
+        self.o = operands
 
     def __add__(self, other):
         """Return the Expr for the sum of this Expr and another."""
@@ -63,14 +63,15 @@ class Operator(Expression):
         left_str = " ".join(map(str, self.o[:len(self.o) - 2]))
         return f'{left_str} {self.symbol} {self.o[-1]}'
 
+
 def make_operands_tuple(left, symbol, right):
-    """Help function"""
+    """Help function."""
     if isinstance(left, Terminal):
-        operands_list = [left.value, symbol, right.value]  
+        operands_list = [left.value, symbol, right.value]
     else:
         operands_list = [item for item in left.o]
         operands_list.append(symbol)
-        operands_list.append(right.value)    
+        operands_list.append(right.value)
     return tuple(operands_list)
 
 
@@ -81,7 +82,7 @@ class Add(Operator):
     symbol = '+'
 
     def __init__(self, left, right):
-        """Construct an Add object"""
+        """Construct an Add object."""
         self.o = make_operands_tuple(left, self.symbol, right)
         Expression(self.o)
 
@@ -93,7 +94,7 @@ class Sub(Operator):
     symbol = '-'
 
     def __init__(self, left, right):
-        """Construct a Sub object"""
+        """Construct a Sub object."""
         self.o = make_operands_tuple(left, self.symbol, right)
         Expression(self.o)
 
@@ -105,7 +106,7 @@ class Mul(Operator):
     symbol = '*'
 
     def __init__(self, left, right):
-        """Construct a Mul object"""
+        """Construct a Mul object."""
         self.o = make_operands_tuple(left, self.symbol, right)
         Expression(self.o)
 
@@ -117,7 +118,7 @@ class Div(Operator):
     symbol = '/'
 
     def __init__(self, left, right):
-        """Construct an Div object"""
+        """Construct n Div object."""
         self.o = make_operands_tuple(left, self.symbol, right)
         Expression(self.o)
 
@@ -129,12 +130,13 @@ class Pow(Operator):
     symbol = '^'
 
     def __init__(self, left, right):
-        """Construct an Pow object"""
+        """Construct an Pow object."""
         self.o = make_operands_tuple(left, self.symbol, right)
-        Expression(self.o)        
+        Expression(self.o)
 
 
 class Terminal(Expression):
+    """Terminal class."""
     def __init__(self, value):
         super().__init__(())
         self.value = value
@@ -148,15 +150,18 @@ class Terminal(Expression):
         return str(self.value)
 
 class Number(Terminal):
+    """Number class."""
     def __init__(self, value):
         if isinstance(value, numbers.Number):
             super().__init__(value)
         else:
             raise ValueError
 
+
 class Symbol(Terminal):
+    """Symbol class."""
     def __init__(self, value):
-      if isinstance(value, str):
-          super().__init__(value)
-      else:
-          raise ValueError
+        if isinstance(value, str):
+            super().__init__(value)
+        else:
+            raise ValueError
