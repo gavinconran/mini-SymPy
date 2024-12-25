@@ -96,7 +96,7 @@ def make_operands_tuple(left, symbol, right):
         else:
             print('left is a Terminal and right is an Operator')
             # print(f'make_op_tup: right.o: {right.o}')
-            operands_list = [left.value, symbol, right.o]     
+            operands_list = [left.value, symbol, right.o]
     else:
         # HERE LIE THE BUGS
         if isinstance(right, Terminal):
@@ -192,6 +192,7 @@ class Pow(Operator):
 
 class Terminal(Expression):
     """Terminal class."""
+
     def __init__(self, value):
         super().__init__(())
         self.value = value
@@ -207,6 +208,7 @@ class Terminal(Expression):
 
 class Number(Terminal):
     """Number class."""
+
     def __init__(self, value):
         if isinstance(value, numbers.Number):
             super().__init__(value)
@@ -216,6 +218,7 @@ class Number(Terminal):
 
 class Symbol(Terminal):
     """Symbol class."""
+
     def __init__(self, value):
         if isinstance(value, str):
             super().__init__(value)
