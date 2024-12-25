@@ -66,6 +66,11 @@ class Expression:
         """Return the Expr for the pow of this Expr and another."""
         return Pow(self, other)
 
+    @make_other_expr
+    def __rpow__(self, other):
+        """Return the Expr for the pow of this Expr and another."""
+        return Pow(other, self)
+
 
 class Operator(Expression):
     """Operator class."""
