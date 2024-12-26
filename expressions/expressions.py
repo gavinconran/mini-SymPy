@@ -92,44 +92,38 @@ def make_operands_tuple(left, operator, right):
         if isinstance(right, Terminal):
             operands_list = [left.value, operator.symbol, right.value]
         else:
-            operands_list = [left.value, operator.symbol, right.o]
+            if (operator.precedence < right.precedence):
+                print('Add brackets: operator.precedence < right.precedence')
+            operands_list = ['(', left.value, operator.symbol]
+            for item in right.o:
+                operands_list.append(item)
+            operands_list.append(')')
+            right.o = tuple(operands_list)    
     else:
         # As left is an Operator, check for higher precedence
         if (left.precedence < operator.precedence):
-            print('Add brackets')
-            # print(f'{type(left).__name__}.left.o: {left.o} \
-            #      with precedence {left.precedence}')
-            # print(f'{type(operator).__name__} \
-            #      with precedence: {operator.precedence}')
+            print('Add brackets: left.precedence < operator.precedence')
             left_list = ['(']
             for item in left.o:
                 left_list.append(item)
             left_list.append(')')
-            # print(f'left_list: {left_list}')
-            # print('Brackets added')
             left.o = tuple(left_list)
-            # left.precedence = operator.precedence
-            # print(f'{type(left).__name__}.left.o: {left.o} \
-            #      with precedence {left.precedence}')
 
         if isinstance(right, Terminal):
             # print('left is an Opeator and right is a Terminal')
-            # print(f'make_op_tup: left.o: {left.o}')
-            # print(f'make_op_tup: symbol: {symbol}')
-            # print(f'make_op_tup: right.value: {right.value}')
             operands_list = [item for item in left.o]
             operands_list.append(operator.symbol)
             operands_list.append(right.value)
         else:
             # print('left is a Operator and right is a Operator')
-            # print(f'make_op_tup: left.o: {left.o}')
-            # print(f'make_op_tup: symbol: {symbol}')
-            # print(f'make_op_tup: right.value: {right.value}')
+            if (operator.precedence < right.precedence):
+                print('Add brackets: left.precedence < right.precedence')
+
             operands_list = [item for item in left.o]
             operands_list.append(operator.symbol)
             for item in right.o:
                 operands_list.append(item)
-    return tuple(item for item in operands_list)
+    return tuple(operands_list)
 
 
 class Add(Operator):
