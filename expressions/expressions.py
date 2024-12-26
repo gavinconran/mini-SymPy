@@ -19,7 +19,7 @@ class Expression:
 
     def __init__(self, operands):
         """Initialise an Expression."""
-        self.o = operands
+        self.operands = operands
 
     @make_other_expr
     def __add__(self, other):
@@ -77,51 +77,58 @@ class Operator(Expression):
 
     def __repr__(self):
         """Return the canonical representation of an operator."""
-        operands = tuple([self.o[i] for i in range(len(self.o)) if i % 2 == 0])
+        operands = tuple([self.operands[i]
+                          for i in range(len(self.operands)) if i % 2 == 0])
         return type(self).__name__ + repr(operands)
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        #### HERE IS THE BUG ###
-        expr_str = " ".join(map(str, self.o))
+        # HERE IS THE BUG
+        expr_str = " ".join(map(str, self.operands))
         return f'{expr_str}'
 
 
 def make_operands_tuple(left, operator, right):
     """Auxillory function."""
-    if isinstance(left, Terminal): # left is Terminal
-        if isinstance(right, Terminal): # left is Terminal, right is Terminal
+    if isinstance(left, Terminal):
+        # left is Terminal
+        if isinstance(right, Terminal):
+            # left is Terminal, right is Terminal
             operands_list = [left.value, operator.symbol, right.value]
-        else: # left is Terminal, right is an Operator
+        else:
+            # left is Terminal, right is an Operator
             operands_list = [left.value, operator.symbol]
-            for item in right.o:
+            for item in right.operands:
                 operands_list.append(item)
             if (operator.precedence < right.precedence):
                 print('Add brackets to right Operator')
                 operands_list.insert(0, '(')
                 operands_list.append(')')
-                print(f'right Operator: {tuple(operands_list)}')    
-            right.o = tuple(operands_list)
-    else: # left is Operator
+                print(f'right Operator: {tuple(operands_list)}')
+            right.operands = tuple(operands_list)
+    else:
+        # left is Operator
         # As left is an Operator, check for higher precedence
-        #### HERE IS THE BUG ###
+        # HERE IS THE BUG
         if (left.precedence < operator.precedence):
             print('Add brackets to left Operator')
             left_list = ['(']
-            for item in left.o:
+            for item in left.operands:
                 left_list.append(item)
             left_list.append(')')
             print(f'left Operator: {tuple(left_list)}')
-            left.o = tuple(left_list)
+            left.operands = tuple(left_list)
 
-        if isinstance(right, Terminal): # left is Opeator, right is Terminal
-            operands_list = [item for item in left.o]
+        if isinstance(right, Terminal):
+            # left is Opeator, right is Terminal
+            operands_list = [item for item in left.operands]
             operands_list.append(operator.symbol)
             operands_list.append(right.value)
-        else: # left is a Operator, right is a Operator
-            operands_list = [item for item in left.o]
+        else:
+            # left is a Operator, right is a Operator
+            operands_list = [item for item in left.operands]
             operands_list.append(operator.symbol)
-            for item in right.o:
+            for item in right.operands:
                 operands_list.append(item)
     return tuple(operands_list)
 
@@ -134,7 +141,7 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
-        self.o = make_operands_tuple(left, self, right)
+        self.operands = make_operands_tuple(left, self, right)
 
 
 class Sub(Operator):
@@ -145,7 +152,7 @@ class Sub(Operator):
 
     def __init__(self, left, right):
         """Construct a Sub object."""
-        self.o = make_operands_tuple(left, self, right)
+        self.operands = make_operands_tuple(left, self, right)
 
 
 class Mul(Operator):
@@ -156,7 +163,7 @@ class Mul(Operator):
 
     def __init__(self, left, right):
         """Construct a Mul object."""
-        self.o = make_operands_tuple(left, self, right)
+        self.operands = make_operands_tuple(left, self, right)
 
 
 class Div(Operator):
@@ -167,7 +174,7 @@ class Div(Operator):
 
     def __init__(self, left, right):
         """Construct an Div object."""
-        self.o = make_operands_tuple(left, self, right)
+        self.operands = make_operands_tuple(left, self, right)
 
 
 class Pow(Operator):
@@ -178,7 +185,7 @@ class Pow(Operator):
 
     def __init__(self, left, right):
         """Construct an Pow object."""
-        self.o = make_operands_tuple(left, self, right)
+        self.operands = make_operands_tuple(left, self, right)
 
 
 class Terminal(Expression):
