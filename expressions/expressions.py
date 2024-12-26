@@ -86,41 +86,50 @@ class Operator(Expression):
         return f'{expr_str}'
 
 
-def make_operands_tuple(left, symbol, right):
+def make_operands_tuple(left, operator, right):
     """Auxillory function."""
-    print('make_operands_tuple')
-    # print(f'make_op_tup: left: {type(left).__name__}')
-    # print(f'make_op_tup: right: {type(right).__name__}')
     if isinstance(left, Terminal):
-        # print(f'make_op_tup: left.value: {left.value}')
-        # print(f'make_op_tup: symbol: {symbol}')
         if isinstance(right, Terminal):
-            print('left is a Terminal and right is a Terminal')
-            # print(f'make_op_tup: right.o: {right.value}')
-            operands_list = [left.value, symbol, right.value]
+            operands_list = [left.value, operator.symbol, right.value]
         else:
-            print('left is a Terminal and right is an Operator')
-            # print(f'make_op_tup: right.o: {right.o}')
-            operands_list = [left.value, symbol, right.o]
+            operands_list = [left.value, operator.symbol, right.o]
     else:
-        # HERE LIE THE BUGS
+        # As left is an Operator, check for higher precedence
+        if (left.precedence < operator.precedence):
+            print('Add brackets')
+            #print(f'{type(left).__name__}.left.o: {left.o} \
+            #      with precedence {left.precedence}')
+            #print(f'{type(operator).__name__} \
+            #      with precedence: {operator.precedence}')
+            left_list = ['(']
+            for item in left.o:
+                left_list.append(item)
+            left_list.append(')')
+            #print(f'left_list: {left_list}')
+            print('Brackets added')
+            left.o = tuple(left_list)
+            #left.precedence = operator.precedence
+            #print(f'{type(left).__name__}.left.o: {left.o} \
+            #      with precedence {left.precedence}')
+            
         if isinstance(right, Terminal):
-            print('left is an Opeator and right is a Terminal')
+            # print('left is an Opeator and right is a Terminal')
             # print(f'make_op_tup: left.o: {left.o}')
             # print(f'make_op_tup: symbol: {symbol}')
             # print(f'make_op_tup: right.value: {right.value}')
             operands_list = [item for item in left.o]
-            operands_list.append(symbol)
+            operands_list.append(operator.symbol)
             operands_list.append(right.value)
         else:
-            print('left is a Operator and right is a Operator')
+            # print('left is a Operator and right is a Operator')
             # print(f'make_op_tup: left.o: {left.o}')
             # print(f'make_op_tup: symbol: {symbol}')
             # print(f'make_op_tup: right.value: {right.value}')
             operands_list = [item for item in left.o]
-            operands_list.append(symbol)
-            operands_list.append([item for item in right.o])
-    return tuple(operands_list)
+            operands_list.append(operator.symbol)
+            for item in right.o:
+                operands_list.append(item)
+    return tuple(item for item in operands_list)
 
 
 class Add(Operator):
@@ -131,8 +140,7 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
-        # check for higher precedence
-        self.o = make_operands_tuple(left, self.symbol, right)
+        self.o = make_operands_tuple(left, self, right)
 
 
 class Sub(Operator):
@@ -143,8 +151,7 @@ class Sub(Operator):
 
     def __init__(self, left, right):
         """Construct a Sub object."""
-        # check for higher precedence
-        self.o = make_operands_tuple(left, self.symbol, right)
+        self.o = make_operands_tuple(left, self, right)
 
 
 class Mul(Operator):
@@ -155,14 +162,7 @@ class Mul(Operator):
 
     def __init__(self, left, right):
         """Construct a Mul object."""
-        # check for higher precedence
-        if (len(left.o) > 1):
-            if (left.precedence < self.precedence):
-                print(f'mul.left.o: {left.o} \
-                      with precedence {left.precedence}')
-                print(f'mul.precedence: {self.precedence}')
-                print('Add brackets')
-        self.o = make_operands_tuple(left, self.symbol, right)
+        self.o = make_operands_tuple(left, self, right)
 
 
 class Div(Operator):
@@ -173,8 +173,7 @@ class Div(Operator):
 
     def __init__(self, left, right):
         """Construct an Div object."""
-        # check for higher precedence
-        self.o = make_operands_tuple(left, self.symbol, right)
+        self.o = make_operands_tuple(left, self, right)
 
 
 class Pow(Operator):
@@ -185,14 +184,7 @@ class Pow(Operator):
 
     def __init__(self, left, right):
         """Construct an Pow object."""
-        # precedence: nobody beats the big dog
-        if (len(left.o) > 1):
-            if (left.precedence < self.precedence):
-                print(f'mul.left.o: {left.o} \
-                      with precedence {left.precedence}')
-                print(f'mul.precedence: {self.precedence}')
-                print('Add brackets')
-        self.o = make_operands_tuple(left, self.symbol, right)
+        self.o = make_operands_tuple(left, self, right)
 
 
 class Terminal(Expression):
