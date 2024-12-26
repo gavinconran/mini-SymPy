@@ -101,28 +101,23 @@ def make_operands_tuple(left, operator, right):
             operands_list = [left.value, operator.symbol]
             for item in right.operands:
                 operands_list.append(item)
-            # HERE IS THE BUG    
+            # check for precedence
             if (operator.precedence > right.precedence):
-                print('Add brackets to right Operator')
                 operands_list.insert(0, '(')
                 operands_list.append(')')
-                print(f'right Operator: {tuple(operands_list)}')
             right.operands = tuple(operands_list)
     else:
         # left is Operator
         # As left is an Operator, check for higher precedence
-        # HERE IS THE BUG
         if (left.precedence < operator.precedence):
-            print('Add brackets to left Operator')
             left_list = ['(']
             for item in left.operands:
                 left_list.append(item)
             left_list.append(')')
-            print(f'left Operator: {tuple(left_list)}')
             left.operands = tuple(left_list)
 
         if isinstance(right, Terminal):
-            # left is Opeator, right is Terminal
+            # left is Operator, right is Terminal
             operands_list = [item for item in left.operands]
             operands_list.append(operator.symbol)
             operands_list.append(right.value)
@@ -130,7 +125,17 @@ def make_operands_tuple(left, operator, right):
             # left is a Operator, right is a Operator
             operands_list = [item for item in left.operands]
             operands_list.append(operator.symbol)
-            for item in right.operands:
+            # check for precedence
+            right_list =  []
+            if (operator.precedence > right.precedence):
+                right_list.append('(')
+                for item in right.operands:
+                    right_list.append(item)
+                right_list.append(')')
+            else:
+                for item in right.operands:
+                    right_list.append(item)
+            for item in right_list:
                 operands_list.append(item)
     return tuple(operands_list)
 
