@@ -97,21 +97,21 @@ def make_operands_tuple(left, operator, right):
         # As left is an Operator, check for higher precedence
         if (left.precedence < operator.precedence):
             print('Add brackets')
-            #print(f'{type(left).__name__}.left.o: {left.o} \
+            # print(f'{type(left).__name__}.left.o: {left.o} \
             #      with precedence {left.precedence}')
-            #print(f'{type(operator).__name__} \
+            # print(f'{type(operator).__name__} \
             #      with precedence: {operator.precedence}')
             left_list = ['(']
             for item in left.o:
                 left_list.append(item)
             left_list.append(')')
-            #print(f'left_list: {left_list}')
-            print('Brackets added')
+            # print(f'left_list: {left_list}')
+            # print('Brackets added')
             left.o = tuple(left_list)
-            #left.precedence = operator.precedence
-            #print(f'{type(left).__name__}.left.o: {left.o} \
+            # left.precedence = operator.precedence
+            # print(f'{type(left).__name__}.left.o: {left.o} \
             #      with precedence {left.precedence}')
-            
+
         if isinstance(right, Terminal):
             # print('left is an Opeator and right is a Terminal')
             # print(f'make_op_tup: left.o: {left.o}')
