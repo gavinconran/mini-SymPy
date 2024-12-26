@@ -83,8 +83,9 @@ class Operator(Expression):
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        # HERE IS THE BUG
         expr_str = " ".join(map(str, self.operands))
+        expr_str = expr_str.replace("( ", "(")
+        expr_str = expr_str.replace(" )", ")")
         return f'{expr_str}'
 
 
@@ -100,7 +101,8 @@ def make_operands_tuple(left, operator, right):
             operands_list = [left.value, operator.symbol]
             for item in right.operands:
                 operands_list.append(item)
-            if (operator.precedence < right.precedence):
+            # HERE IS THE BUG    
+            if (operator.precedence > right.precedence):
                 print('Add brackets to right Operator')
                 operands_list.insert(0, '(')
                 operands_list.append(')')
