@@ -126,7 +126,7 @@ def make_operands_tuple(left, operator, right):
             operands_list = [item for item in left.operands]
             operands_list.append(operator.symbol)
             # check for precedence
-            right_list =  []
+            right_list = []
             if (operator.precedence > right.precedence):
                 right_list.append('(')
                 for item in right.operands:
