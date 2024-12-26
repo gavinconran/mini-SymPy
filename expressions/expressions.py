@@ -98,7 +98,7 @@ def make_operands_tuple(left, operator, right):
             for item in right.o:
                 operands_list.append(item)
             operands_list.append(')')
-            right.o = tuple(operands_list)    
+            right.o = tuple(operands_list)
     else:
         # As left is an Operator, check for higher precedence
         if (left.precedence < operator.precedence):
