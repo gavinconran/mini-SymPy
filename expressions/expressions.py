@@ -82,43 +82,43 @@ class Operator(Expression):
 
     def __str__(self):
         """Return a string representation of the Operator."""
+        #### HERE IS THE BUG ###
         expr_str = " ".join(map(str, self.o))
         return f'{expr_str}'
 
 
 def make_operands_tuple(left, operator, right):
     """Auxillory function."""
-    if isinstance(left, Terminal):
-        if isinstance(right, Terminal):
+    if isinstance(left, Terminal): # left is Terminal
+        if isinstance(right, Terminal): # left is Terminal, right is Terminal
             operands_list = [left.value, operator.symbol, right.value]
-        else:
-            if (operator.precedence < right.precedence):
-                print('Add brackets: operator.precedence < right.precedence')
-            operands_list = ['(', left.value, operator.symbol]
+        else: # left is Terminal, right is an Operator
+            operands_list = [left.value, operator.symbol]
             for item in right.o:
                 operands_list.append(item)
-            operands_list.append(')')
+            if (operator.precedence < right.precedence):
+                print('Add brackets to right Operator')
+                operands_list.insert(0, '(')
+                operands_list.append(')')
+                print(f'right Operator: {tuple(operands_list)}')    
             right.o = tuple(operands_list)
-    else:
+    else: # left is Operator
         # As left is an Operator, check for higher precedence
+        #### HERE IS THE BUG ###
         if (left.precedence < operator.precedence):
-            print('Add brackets: left.precedence < operator.precedence')
+            print('Add brackets to left Operator')
             left_list = ['(']
             for item in left.o:
                 left_list.append(item)
             left_list.append(')')
+            print(f'left Operator: {tuple(left_list)}')
             left.o = tuple(left_list)
 
-        if isinstance(right, Terminal):
-            # print('left is an Opeator and right is a Terminal')
+        if isinstance(right, Terminal): # left is Opeator, right is Terminal
             operands_list = [item for item in left.o]
             operands_list.append(operator.symbol)
             operands_list.append(right.value)
-        else:
-            # print('left is a Operator and right is a Operator')
-            if (operator.precedence < right.precedence):
-                print('Add brackets: left.precedence < right.precedence')
-
+        else: # left is a Operator, right is a Operator
             operands_list = [item for item in left.o]
             operands_list.append(operator.symbol)
             for item in right.o:
