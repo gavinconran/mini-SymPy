@@ -10,6 +10,8 @@ def make_other_expr(meth):
     def fn(self, other):
         if isinstance(other, numbers.Number):
             other = Number(other)
+        if isinstance(self, numbers.Number):
+            self = Number(self)
         return meth(self, other)
     return fn
 
@@ -77,16 +79,20 @@ class Operator(Expression):
 
     def __repr__(self):
         """Return the canonical representation of an operator."""
-        operands = tuple([self.operands[i]
-                          for i in range(len(self.operands)) if i % 2 == 0])
-        return type(self).__name__ + repr(operands)
+        # operands = tuple([self.operands[i]
+        #                  for i in range(len(self.operands)) if i % 2 == 0])
+        # return type(self).__name__ + repr(operands)
+        return type(self).__name__ + repr(self.operands)
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        expr_str = " ".join(map(str, self.operands))
-        expr_str = expr_str.replace("( ", "(")
-        expr_str = expr_str.replace(" )", ")")
-        return f'{expr_str}'
+        left = self.operands[0]
+        right = self.operands[1]
+        operator = self.symbol
+        expr_str = ", ".join(map(str, self.operands))
+        # expr_str = expr_str.replace("( ", "(")
+        # expr_str = expr_str.replace(" )", ")")
+        return (f'{left} {operator} {right}')
 
 
 def make_operands_tuple(left, operator, right):
@@ -148,7 +154,8 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
-        self.operands = make_operands_tuple(left, self, right)
+        #self.operands = make_operands_tuple(left, self, right)
+        self.operands = (left, right)
 
 
 class Sub(Operator):
@@ -159,7 +166,8 @@ class Sub(Operator):
 
     def __init__(self, left, right):
         """Construct a Sub object."""
-        self.operands = make_operands_tuple(left, self, right)
+        # self.operands = make_operands_tuple(left, self, right)
+        self.operands = (left, right)
 
 
 class Mul(Operator):
@@ -170,7 +178,8 @@ class Mul(Operator):
 
     def __init__(self, left, right):
         """Construct a Mul object."""
-        self.operands = make_operands_tuple(left, self, right)
+        # self.operands = make_operands_tuple(left, self, right)
+        self.operands = (left, right)
 
 
 class Div(Operator):
@@ -181,7 +190,8 @@ class Div(Operator):
 
     def __init__(self, left, right):
         """Construct an Div object."""
-        self.operands = make_operands_tuple(left, self, right)
+        # self.operands = make_operands_tuple(left, self, right)
+        self.operands = (left, right)
 
 
 class Pow(Operator):
@@ -192,7 +202,8 @@ class Pow(Operator):
 
     def __init__(self, left, right):
         """Construct an Pow object."""
-        self.operands = make_operands_tuple(left, self, right)
+        # self.operands = make_operands_tuple(left, self, right)
+        self.operands = (left, right)
 
 
 class Terminal(Expression):
