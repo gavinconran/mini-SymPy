@@ -130,9 +130,9 @@ class Mul(Operator):
         """Construct a Mul object."""
         self.parentheses = False
         if check_for_precedence(left, self):
-            left.parentheses= True
+            left.parentheses = True
         if check_for_precedence(right, self):
-            right.parentheses= True
+            right.parentheses = True
         self.operands = (left, right)
 
 
