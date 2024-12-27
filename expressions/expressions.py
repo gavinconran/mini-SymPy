@@ -89,7 +89,7 @@ class Operator(Expression):
         left = self.operands[0]
         right = self.operands[1]
         operator = self.symbol
-        expr_str = ", ".join(map(str, self.operands))
+        # expr_str = ", ".join(map(str, self.operands))
         # expr_str = expr_str.replace("( ", "(")
         # expr_str = expr_str.replace(" )", ")")
         return (f'{left} {operator} {right}')
@@ -154,7 +154,7 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
-        #self.operands = make_operands_tuple(left, self, right)
+        # self.operands = make_operands_tuple(left, self, right)
         self.operands = (left, right)
 
 
