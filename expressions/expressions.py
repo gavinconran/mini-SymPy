@@ -87,7 +87,7 @@ class Operator(Expression):
 
 
 def check_for_precedence(operand, operator):
-    "Check for precedence"
+    """Check for precedence."""
     return not isinstance(operand, Terminal) \
         and operand.precedence < operator.precedence
 
