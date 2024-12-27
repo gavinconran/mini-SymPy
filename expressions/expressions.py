@@ -22,6 +22,7 @@ class Expression:
     def __init__(self, operands):
         """Initialise an Expression."""
         self.operands = operands
+        self.parentheses = False
 
     @make_other_expr
     def __add__(self, other):
@@ -83,7 +84,10 @@ class Operator(Expression):
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        return (f'{self.operands[0]} {self.symbol} {self.operands[1]}')
+        if self.parentheses:
+            return (f'({self.operands[0]} {self.symbol} {self.operands[1]})')
+        else:
+            return (f'{self.operands[0]} {self.symbol} {self.operands[1]}')
 
 
 def check_for_precedence(operand, operator):
@@ -100,6 +104,7 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
+        self.parentheses = False
         self.operands = (left, right)
 
 
@@ -111,6 +116,7 @@ class Sub(Operator):
 
     def __init__(self, left, right):
         """Construct a Sub object."""
+        self.parentheses = False
         self.operands = (left, right)
 
 
@@ -122,10 +128,11 @@ class Mul(Operator):
 
     def __init__(self, left, right):
         """Construct a Mul object."""
+        self.parentheses = False
         if check_for_precedence(left, self):
-            print(f'Add brackets to left operand {repr(left)}')
+            left.parentheses= True
         if check_for_precedence(right, self):
-            print(f'Add brackets to right operand {repr(right)}')
+            right.parentheses= True
         self.operands = (left, right)
 
 
@@ -137,10 +144,11 @@ class Div(Operator):
 
     def __init__(self, left, right):
         """Construct an Div object."""
+        self.parentheses = False
         if check_for_precedence(left, self):
-            print(f'Add brackets to left operand {repr(left)}')
+            left.parentheses = True
         if check_for_precedence(right, self):
-            print(f'Add brackets to right operand {repr(right)}')
+            right.parentheses = True
         self.operands = (left, right)
 
 
@@ -152,10 +160,11 @@ class Pow(Operator):
 
     def __init__(self, left, right):
         """Construct an Pow object."""
+        self.parentheses = False
         if check_for_precedence(left, self):
-            print(f'Add brackets to left operand {repr(left)}')
+            left.parentheses = True
         if check_for_precedence(right, self):
-            print(f'Add brackets to right operand {repr(right)}')
+            right.parentheses = True
         self.operands = (left, right)
 
 
