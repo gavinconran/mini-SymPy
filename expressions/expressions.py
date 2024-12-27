@@ -79,71 +79,17 @@ class Operator(Expression):
 
     def __repr__(self):
         """Return the canonical representation of an operator."""
-        # operands = tuple([self.operands[i]
-        #                  for i in range(len(self.operands)) if i % 2 == 0])
-        # return type(self).__name__ + repr(operands)
         return type(self).__name__ + repr(self.operands)
 
     def __str__(self):
         """Return a string representation of the Operator."""
-        left = self.operands[0]
-        right = self.operands[1]
-        operator = self.symbol
-        # expr_str = ", ".join(map(str, self.operands))
-        # expr_str = expr_str.replace("( ", "(")
-        # expr_str = expr_str.replace(" )", ")")
-        return (f'{left} {operator} {right}')
+        return (f'{self.operands[0]} {self.symbol} {self.operands[1]}')
 
 
-def make_operands_tuple(left, operator, right):
-    """Auxillory function."""
-    if isinstance(left, Terminal):
-        # left is Terminal
-        if isinstance(right, Terminal):
-            # left is Terminal, right is Terminal
-            operands_list = [left.value, operator.symbol, right.value]
-        else:
-            # left is Terminal, right is an Operator
-            operands_list = [left.value, operator.symbol]
-            for item in right.operands:
-                operands_list.append(item)
-            # check for precedence
-            if (operator.precedence > right.precedence):
-                operands_list.insert(0, '(')
-                operands_list.append(')')
-            right.operands = tuple(operands_list)
-    else:
-        # left is Operator
-        # As left is an Operator, check for higher precedence
-        if (left.precedence < operator.precedence):
-            left_list = ['(']
-            for item in left.operands:
-                left_list.append(item)
-            left_list.append(')')
-            left.operands = tuple(left_list)
-
-        if isinstance(right, Terminal):
-            # left is Operator, right is Terminal
-            operands_list = [item for item in left.operands]
-            operands_list.append(operator.symbol)
-            operands_list.append(right.value)
-        else:
-            # left is a Operator, right is a Operator
-            operands_list = [item for item in left.operands]
-            operands_list.append(operator.symbol)
-            # check for precedence
-            right_list = []
-            if (operator.precedence > right.precedence):
-                right_list.append('(')
-                for item in right.operands:
-                    right_list.append(item)
-                right_list.append(')')
-            else:
-                for item in right.operands:
-                    right_list.append(item)
-            for item in right_list:
-                operands_list.append(item)
-    return tuple(operands_list)
+def check_for_precedence(operand, operator):
+    "Check for precedence"
+    return not isinstance(operand, Terminal) \
+        and operand.precedence < operator.precedence
 
 
 class Add(Operator):
@@ -154,7 +100,6 @@ class Add(Operator):
 
     def __init__(self, left, right):
         """Construct an Add object."""
-        # self.operands = make_operands_tuple(left, self, right)
         self.operands = (left, right)
 
 
@@ -166,7 +111,6 @@ class Sub(Operator):
 
     def __init__(self, left, right):
         """Construct a Sub object."""
-        # self.operands = make_operands_tuple(left, self, right)
         self.operands = (left, right)
 
 
@@ -178,7 +122,10 @@ class Mul(Operator):
 
     def __init__(self, left, right):
         """Construct a Mul object."""
-        # self.operands = make_operands_tuple(left, self, right)
+        if check_for_precedence(left, self):
+            print(f'Add brackets to left operand {repr(left)}')
+        if check_for_precedence(right, self):
+            print(f'Add brackets to right operand {repr(right)}')
         self.operands = (left, right)
 
 
@@ -190,7 +137,10 @@ class Div(Operator):
 
     def __init__(self, left, right):
         """Construct an Div object."""
-        # self.operands = make_operands_tuple(left, self, right)
+        if check_for_precedence(left, self):
+            print(f'Add brackets to left operand {repr(left)}')
+        if check_for_precedence(right, self):
+            print(f'Add brackets to right operand {repr(right)}')
         self.operands = (left, right)
 
 
@@ -202,7 +152,10 @@ class Pow(Operator):
 
     def __init__(self, left, right):
         """Construct an Pow object."""
-        # self.operands = make_operands_tuple(left, self, right)
+        if check_for_precedence(left, self):
+            print(f'Add brackets to left operand {repr(left)}')
+        if check_for_precedence(right, self):
+            print(f'Add brackets to right operand {repr(right)}')
         self.operands = (left, right)
 
 
