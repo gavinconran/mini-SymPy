@@ -1,7 +1,7 @@
 """Contains the Class Expression and associated sub-classes."""
 
 import numbers
-from functools import wraps, singledispatch
+from functools import wraps
 
 
 def make_other_expr(meth):
