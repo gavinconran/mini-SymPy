@@ -1,7 +1,7 @@
 """Contains the Class Expression and associated sub-classes."""
 
 import numbers
-from functools import wraps
+from functools import wraps, singledispatch
 
 
 def make_other_expr(meth):
@@ -202,3 +202,102 @@ class Symbol(Terminal):
             super().__init__(value)
         else:
             raise ValueError
+
+
+@singledispatch
+def evaluate(expr, *o, **kwargs):
+    """Evaluate an expression node.
+
+    Parameters
+    ----------
+    expr: Expression
+        The expression node to be evaluated.
+    *o: numbers.Number
+        The results of evaluating the operands of expr.
+    **kwargs:
+        Any keyword arguments required to evaluate specific types of
+        expression.
+    symbol_map: dict
+        A dictionary mapping Symbol names to numerical values, for
+        example:
+
+        {'x': 1}
+    """
+    raise NotImplementedError(
+        f"Cannot evaluate a {type(expr).__name__}")
+
+
+@evaluate.register(Number)
+def _(expr, *o, **kwargs):
+    return expr.value
+
+
+@evaluate.register(Symbol)
+def _(expr, *o, symbol_map, **kwargs):
+    return symbol_map[expr.value]
+
+
+@evaluate.register(Add)
+def _(expr, *o, **kwargs):
+    return o[0] + o[1]
+
+
+@evaluate.register(Sub)
+def _(expr, *o, **kwargs):
+    return o[0] - o[1]
+
+
+@evaluate.register(Mul)
+def _(expr, *o, **kwargs):
+    return o[0] * o[1]
+
+
+@evaluate.register(Div)
+def _(expr, *o, **kwargs):
+    return o[0] / o[1]
+
+
+@evaluate.register(Pow)
+def _(expr, *o, **kwargs):
+    return o[0] ** o[1]
+
+
+def postvisitor(expr, fn, **kwargs):
+    '''Visit an Expression in postorder applying a function to every node.
+
+    Parameters
+    ----------
+    expr: Expression
+        The expression to be visited.
+    fn: `function(node, *o, **kwargs)`
+        A function to be applied at each node. The function should take
+        the node to be visited as its first argument, and the results of
+        visiting its operands as any further positional arguments. Any
+        additional information that the visitor requires can be passed in
+        as keyword arguments.
+    **kwargs:
+        Any additional keyword arguments to be passed to fn.
+    '''
+    stack = []
+    visited = {}
+    stack.append(expr)
+    while stack:
+        e = stack.pop()
+        unvisited_children = []
+        for o in e.operands:
+            if o not in visited:
+                unvisited_children.append(o)
+
+        if unvisited_children: 
+            stack.append(e) # Not ready to visit this node yet.
+            # Need to visit children before e.
+            for child in unvisited_children:
+                stack.append(child)
+        else:
+            # Any children of e have been visited, so we can visit it.
+            visited[e] = fn(e, *(visited[o] for o in e.operands),
+                            **kwargs)
+
+    # When the stack is empty, we have visited every subexpression,
+    # including expr itself.
+    return visited[expr]
