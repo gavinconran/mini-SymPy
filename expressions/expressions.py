@@ -204,66 +204,8 @@ class Symbol(Terminal):
             raise ValueError
 
 
-@singledispatch
-def evaluate(expr, *o, **kwargs):
-    """Evaluate an expression node.
-
-    Parameters
-    ----------
-    expr: Expression
-        The expression node to be evaluated.
-    *o: numbers.Number
-        The results of evaluating the operands of expr.
-    **kwargs:
-        Any keyword arguments required to evaluate specific types of
-        expression.
-    symbol_map: dict
-        A dictionary mapping Symbol names to numerical values, for
-        example:
-
-        {'x': 1}
-    """
-    raise NotImplementedError(
-        f"Cannot evaluate a {type(expr).__name__}")
-
-
-@evaluate.register(Number)
-def _(expr, *o, **kwargs):
-    return expr.value
-
-
-@evaluate.register(Symbol)
-def _(expr, *o, symbol_map, **kwargs):
-    return symbol_map[expr.value]
-
-
-@evaluate.register(Add)
-def _(expr, *o, **kwargs):
-    return o[0] + o[1]
-
-
-@evaluate.register(Sub)
-def _(expr, *o, **kwargs):
-    return o[0] - o[1]
-
-
-@evaluate.register(Mul)
-def _(expr, *o, **kwargs):
-    return o[0] * o[1]
-
-
-@evaluate.register(Div)
-def _(expr, *o, **kwargs):
-    return o[0] / o[1]
-
-
-@evaluate.register(Pow)
-def _(expr, *o, **kwargs):
-    return o[0] ** o[1]
-
-
 def postvisitor(expr, fn, **kwargs):
-    '''Visit an Expression in postorder applying a function to every node.
+    """Visit an Expression in postorder applying a function to every node.
 
     Parameters
     ----------
@@ -277,7 +219,7 @@ def postvisitor(expr, fn, **kwargs):
         as keyword arguments.
     **kwargs:
         Any additional keyword arguments to be passed to fn.
-    '''
+    """
     stack = []
     visited = {}
     stack.append(expr)
@@ -288,8 +230,8 @@ def postvisitor(expr, fn, **kwargs):
             if o not in visited:
                 unvisited_children.append(o)
 
-        if unvisited_children: 
-            stack.append(e) # Not ready to visit this node yet.
+        if unvisited_children:
+            stack.append(e)  # Not ready to visit this node yet.
             # Need to visit children before e.
             for child in unvisited_children:
                 stack.append(child)
