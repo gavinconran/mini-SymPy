@@ -1,7 +1,7 @@
 """Contains the Class Expression and associated sub-classes."""
 
 import numbers
-from functools import wraps
+from functools import wraps, singledispatch
 
 
 def make_other_expr(meth):
@@ -203,7 +203,7 @@ class Symbol(Terminal):
         else:
             raise ValueError
 
-
+# postvisitor(expr, differentiate, var=dvar)
 def postvisitor(expr, fn, **kwargs):
     """Visit an Expression in postorder applying a function to every node.
 
@@ -243,3 +243,79 @@ def postvisitor(expr, fn, **kwargs):
     # When the stack is empty, we have visited every subexpression,
     # including expr itself.
     return visited[expr]
+
+@singledispatch
+def differentiate(expr, *o, **kwargs):
+    """Differentiate an expression node.
+
+    Parameters
+    ----------
+    expr: Expression
+        The expression node to be evaluated.
+    *o: Number
+        The results of differentiating the operands of expr.
+    **kwargs:
+        Any keyword arguments required to differentiating specific types of
+        expression.
+    wrt_var: character
+        The variable with respect to differentiation, for
+        example:
+
+        'x'
+    """
+    raise NotImplementedError(
+        f"Cannot evaluate a {type(expr).__name__}")
+
+
+@differentiate.register(Number)
+def _(expr, *o, **kwargs):
+    # print(f"Number: var: {kwargs['var']}")
+    return 0.0 # Number(0.0)
+
+
+@differentiate.register(Symbol)
+def _(expr, *o, **kwargs):
+    print(f"Symbol: var: {kwargs['var']}")
+    if kwargs['var'] == expr.value:
+        print(f"kwargs['var']: {kwargs['var']} == expr.value: {expr.value}")
+        return 1.0 # Number(1.0)
+    else:
+        print(f"kwargs['var']: {kwargs['var']} != expr.value: {expr.value}")
+        return 0.0 # Number(0.0)  
+
+
+@differentiate.register(Add)
+def _(expr, *o, **kwargs):
+    print(f'Add: var: {kwargs["var"]}')
+    print(f'res: {o[0] + o[1]}')
+    return o[0] + o[1]
+
+
+@differentiate.register(Sub)
+def _(expr, *o, **kwargs):
+    print(f'Sub: var: {kwargs["var"]}')
+    return o[0] - o[1]
+
+
+@differentiate.register(Mul)
+def _(expr, *o, **kwargs):
+    # product rule
+    print(f'Mul: var: {kwargs["var"]}')     
+    return o[0] * expr.operands[1] + o[1] * expr.operands[0]
+
+
+@differentiate.register(Div)
+def _(expr, *o, **kwargs):
+    # quodient rule
+    print(f'Div: var: {kwargs["var"]}')
+    return (o[0] * expr.operands[1] - expr.operands[0] * o[1]) \
+            / expr.operands[1] ** 2
+
+
+@differentiate.register(Pow)
+def _(expr, *o, **kwargs):
+    # power rule
+    print(f'Pow: var: {kwargs["var"]}')
+    res =  expr.operands[1]  * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
+    print(f'res: {res}')
+    return res
