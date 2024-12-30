@@ -203,7 +203,7 @@ class Symbol(Terminal):
         else:
             raise ValueError
 
-# postvisitor(expr, differentiate, var=dvar)
+
 def postvisitor(expr, fn, **kwargs):
     """Visit an Expression in postorder applying a function to every node.
 
@@ -244,6 +244,7 @@ def postvisitor(expr, fn, **kwargs):
     # including expr itself.
     return visited[expr]
 
+
 @singledispatch
 def differentiate(expr, *o, **kwargs):
     """Differentiate an expression node.
@@ -275,7 +276,7 @@ def _(expr, *o, **kwargs):
     if kwargs['var'] == expr.value:
         return 1.0
     else:
-        return 0.0  
+        return 0.0
 
 
 @differentiate.register(Add)
@@ -290,7 +291,7 @@ def _(expr, *o, **kwargs):
 
 @differentiate.register(Mul)
 def _(expr, *o, **kwargs):
-    # product rule     
+    # product rule
     return o[0] * expr.operands[1] + o[1] * expr.operands[0]
 
 
@@ -304,6 +305,6 @@ def _(expr, *o, **kwargs):
 @differentiate.register(Pow)
 def _(expr, *o, **kwargs):
     # power rule
-    # not sure why I had to add * 1.0 at the end
-    res =  expr.operands[1] * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
+    # warning: not sure why I had to add * 1.0 at the end
+    res = expr.operands[1] * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
     return res
