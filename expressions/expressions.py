@@ -259,9 +259,7 @@ def differentiate(expr, *o, **kwargs):
         expression.
     wrt_var: character
         The variable with respect to differentiation, for
-        example:
-
-        'x'
+        example:        'x'
     """
     raise NotImplementedError(
         f"Cannot evaluate a {type(expr).__name__}")
@@ -269,45 +267,36 @@ def differentiate(expr, *o, **kwargs):
 
 @differentiate.register(Number)
 def _(expr, *o, **kwargs):
-    # print(f"Number: var: {kwargs['var']}")
-    return 0.0 # Number(0.0)
+    return 0.0
 
 
 @differentiate.register(Symbol)
 def _(expr, *o, **kwargs):
-    print(f"Symbol: var: {kwargs['var']}")
     if kwargs['var'] == expr.value:
-        print(f"kwargs['var']: {kwargs['var']} == expr.value: {expr.value}")
-        return 1.0 # Number(1.0)
+        return 1.0
     else:
-        print(f"kwargs['var']: {kwargs['var']} != expr.value: {expr.value}")
-        return 0.0 # Number(0.0)  
+        return 0.0  
 
 
 @differentiate.register(Add)
 def _(expr, *o, **kwargs):
-    print(f'Add: var: {kwargs["var"]}')
-    print(f'res: {o[0] + o[1]}')
     return o[0] + o[1]
 
 
 @differentiate.register(Sub)
 def _(expr, *o, **kwargs):
-    print(f'Sub: var: {kwargs["var"]}')
     return o[0] - o[1]
 
 
 @differentiate.register(Mul)
 def _(expr, *o, **kwargs):
-    # product rule
-    print(f'Mul: var: {kwargs["var"]}')     
+    # product rule     
     return o[0] * expr.operands[1] + o[1] * expr.operands[0]
 
 
 @differentiate.register(Div)
 def _(expr, *o, **kwargs):
     # quodient rule
-    print(f'Div: var: {kwargs["var"]}')
     return (o[0] * expr.operands[1] - expr.operands[0] * o[1]) \
             / expr.operands[1] ** 2
 
@@ -315,7 +304,6 @@ def _(expr, *o, **kwargs):
 @differentiate.register(Pow)
 def _(expr, *o, **kwargs):
     # power rule
-    print(f'Pow: var: {kwargs["var"]}')
-    res =  expr.operands[1]  * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
-    print(f'res: {res}')
+    # not sure why I had to add * 1.0 at the end
+    res =  expr.operands[1] * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
     return res
