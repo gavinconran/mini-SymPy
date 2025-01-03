@@ -304,7 +304,6 @@ def _(expr, *o, **kwargs):
 
 @differentiate.register(Pow)
 def _(expr, *o, **kwargs):
-    # power rule
-    # warning: not sure why I had to add * 1.0 at the end
+    # chain rule
     res = expr.operands[1] * expr.operands[0] ** (expr.operands[1] - 1) * 1.0
     return res
